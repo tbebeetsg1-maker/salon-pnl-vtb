@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<title>Salon P&L — Report</title>
+</head>
+<body>
+
+<header class="site-header">
+    <div>
+        <p class="brand-name">Salon P&amp;L</p>
+        <p class="brand-tag">Invoicing &amp; expense tracking, v.TB</p>
+    </div>
+    <svg class="brand-mark" width="30" height="39" viewBox="0 0 100 130" fill="currentColor" aria-hidden="true">
+        <path d="M22 4 C26 4 30 8 33 13 L58 63 C61 68 61 73 58 77 L54 82 C51 78 49 74 47 70 L20 16 C18 12 19 7 22 4 Z"/>
+        <path d="M50 80 L70 108 L64 114 L46 88 Z"/>
+        <circle cx="76" cy="112" r="13" fill="none" stroke="currentColor" stroke-width="7"/>
+        <path d="M84 122 C88 126 90 130 88 134" stroke="currentColor" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M78 4 C74 4 70 8 67 13 L42 63 C39 68 39 73 42 77 L46 82 C49 78 51 74 53 70 L80 16 C82 12 81 7 78 4 Z"/>
+        <path d="M50 80 L30 108 L36 114 L54 88 Z"/>
+        <circle cx="24" cy="112" r="13" fill="none" stroke="currentColor" stroke-width="7"/>
+        <circle cx="50" cy="80" r="3"/>
+    </svg>
+    <nav class="site-nav">
+        <a href="/">Home</a>
+        <a href="/report" class="active">Report</a>
+    </nav>
+</header>
+
+<!-- Current calendar month's P&L, computed server-side in app.py -->
+<h1>This month's P&amp;L</h1>
+<div class="stat-grid">
+    <div class="stat-card">
+        <p class="stat-label">Total sales</p>
+        <p class="stat-value">${{ current.total_sales }}</p>
+    </div>
+    <div class="stat-card">
+        <p class="stat-label">Total expenses</p>
+        <p class="stat-value expense">${{ current.total_expenses }}</p>
+    </div>
+    <div class="stat-card">
+        <p class="stat-label">Tax owed</p>
+        <p class="stat-value expense">${{ current.tax_owed }}</p>
+    </div>
+    <div class="stat-card highlight">
+        <p class="stat-label">Net profit</p>
+        <p class="stat-value">${{ current.net_profit }}</p>
+    </div>
+</div>
+
+<!-- Optional custom date-range report, only computed if the form below
+     has been submitted with both start and end dates -->
+<p class="section-title">Historical report</p>
+<form action="/report" method="GET" class="date-range-form">
+    <div class="field">
+        <label for="start">From</label>
+        <input type="date" id="start" name="start" value="{{ start or '' }}">
+    </div>
+    <div class="field">
+        <label for="end">To</label>
+        <input type="date" id="end" name="end" value="{{ end or '' }}">
+    </div>
+    <button type="submit">Run report</button>
+</form>
+
+{% if range_report %}
+<div class="stat-grid">
+    <div class="stat-card">
+        <p class="stat-label">Total sales</p>
+        <p class="stat-value">${{ range_report.total_sales }}</p>
+    </div>
+    <div class="stat-card">
+        <p class="stat-label">Total expenses</p>
+        <p class="stat-value expense">${{ range_report.total_expenses }}</p>
+    </div>
+    <div class="stat-card">
+        <p class="stat-label">Tax owed</p>
+        <p class="stat-value expense">${{ range_report.tax_owed }}</p>
+    </div>
+    <div class="stat-card highlight">
+        <p class="stat-label">Net profit</p>
+        <p class="stat-value">${{ range_report.net_profit }}</p>
+    </div>
+</div>
+<a href="/export?start={{ start }}&end={{ end }}" class="btn btn-gold">Export to Excel</a>
+{% endif %}
+
+</body>
+</html>

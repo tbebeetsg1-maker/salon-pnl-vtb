@@ -1,0 +1,4 @@
+__pycache__/
+generated/
+Prompts used to build this.docx
+data/entries.csv
